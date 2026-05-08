@@ -38,3 +38,21 @@ export async function GET() {
 
   return Response.json(records);
 }
+
+export async function DELETE(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+
+  if (!id) {
+    return Response.json(
+      { error: "missing id" },
+      { status: 400 }
+    );
+  }
+
+  await prisma.record.delete({
+    where: { id: Number(id) },
+  });
+
+  return Response.json({ success: true });
+}

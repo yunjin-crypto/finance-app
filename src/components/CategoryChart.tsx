@@ -10,14 +10,23 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+import { useRealtimeSync } from "@/lib/useRealtimeSync";
+
 export default function CategoryChart() {
   const [data, setData] = useState([]);
 
+  const loadData = async () => {
+    const res = await fetch("/api/stats");
+    const json = await res.json();
+    setData(json);
+  };
+
   useEffect(() => {
-    fetch("/api/stats")
-      .then((res) => res.json())
-      .then(setData);
+    loadData();
   }, []);
+
+  // ⭐ 关键：统一实时同步
+  useRealtimeSync(loadData);
 
   return (
     <div className="w-full h-80">
